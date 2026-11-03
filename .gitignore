@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Test and type-checker caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Matter and client material. The air-gapped deployment keeps these on the
+# enclave; nothing belonging to a real matter belongs in this repository.
+discoveries/
+incoming/
+staging/
+inbox/
+case_files/
+*.sqlite
+*.sqlite3
+*.db
+*.eml
+*.msg
+
+# Editor and OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local logs
+*.log
+logs/

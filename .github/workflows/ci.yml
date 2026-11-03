@@ -1,0 +1,53 @@
+# Sovereign CI: runs on every push and pull request.
+#
+# What this workflow guards:
+#   1. The pytest suite must pass with no dependencies beyond pytest. The
+#      suite is deterministic and needs no model, no key, and no network.
+#   2. The quality gate (scripts/gate.py + QUALITY_BAR.md) runs as the final
+#      step. It enforces the repository's own invariants: required files,
+#      README structure, mermaid well-formedness, absence of secrets,
+#      absence of client or matter data, absence of absolute author paths,
+#      absence of dollar figures and commercial framing, explicit
+#      non-claims, clean vocabulary, and a green test suite. A red gate
+#      blocks the build.
+#
+# The gate has no third-party dependencies. It uses the standard library
+# only, so the CI job installs pytest and nothing else.
+
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: pip install pytest
+
+      - name: Run pytest suite
+        run: python3 -m pytest -q
+
+      - name: Quality gate (final step; see QUALITY_BAR.md)
+        run: |
+          set +e
+          python3 scripts/gate.py > gate.log 2>&1
+          status=$?
+          set -e
+          tail -40 gate.log
+          if [ $status -ne 0 ]; then
+            echo "::error::quality gate failed with status $status"
+            exit $status
+          fi
+          if grep -q "Traceback" gate.log; then
+            echo "::error::quality gate produced a Python traceback"
+            exit 1
+          fi

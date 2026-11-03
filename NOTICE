@@ -1,0 +1,63 @@
+# NOTICE and credits
+
+## What this repository is
+
+Sovereign is a public case study of an air-gapped, on-premise AI deployment
+for a law firm. It documents the infrastructure, states what it does not
+contain, and writes down the alignment research questions that the
+deployment's constraints raise.
+
+## Provenance
+
+This repository was derived from internal deployment artifacts of The Vault
+AI, an on-premise legal AI project. The material was restructured for
+publication: internal identifiers, credentials, matter content, and
+operational details that would identify a firm or a person were removed.
+
+The following artifacts are the basis for the technical content here:
+
+* The cluster configuration and node-hardening procedures, which describe the
+  enclave network topology, the hardware, the inference container
+  specification, and the maintenance and failure-mode procedures.
+* The document ingestion pipeline, which describes the poller, the parser
+  with its OCR fallback threshold, the staged job directory, and the
+  multi-pass extraction sequence.
+* The case-centric data model, which describes the matter table, the
+  per-matter panel table, the ledger table, the deadline table, the entity
+  and processing tables, and the indexes and view over them.
+* The container deployment kit, which describes the application and
+  email-processor services, the persistent volumes, the health checks, and
+  the configuration surface.
+
+The field registry and grounding validator in `src/extraction_schema.py` were
+written for this repository. They are an original implementation of ordinary
+input validation and citation-grounding checks, not a port of any existing
+code. The synthetic fixtures in `tests/fixtures/grounding_cases.json` were
+written for this repository and describe no real matter.
+
+## No client material
+
+No client document, matter, caption, party name, or medical record content
+appears anywhere in this repository. The source material was read to extract
+architecture facts; matter content was deliberately not carried across.
+`scripts/gate.py` enforces this, and the build fails if a matter-shaped
+marker or a case-shaped filename appears.
+
+## Third-party components referenced
+
+The deployment described here uses open-weights models served by an
+open-source inference runtime, and the references are to those projects by
+name and configuration only. No third-party code is vendored into this
+repository, and no model weights are redistributed.
+
+The alignment framing in `README.md` is written in the register of publicly
+published alignment research, including the "Recommendations for Technical AI
+Safety Research Directions" post published by Anthropic's Alignment Science
+team at <https://alignment.anthropic.com/2025/recommended-directions/>. That
+post is cited as the framing reference for the open questions section. The
+questions raised here are ours, and this repository is not affiliated with,
+endorsed by, or produced by that team.
+
+## License
+
+MIT. See `LICENSE`.

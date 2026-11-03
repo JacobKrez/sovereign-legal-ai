@@ -1,0 +1,266 @@
+{
+  "description": "Synthetic grounding fixtures. Each case names a field, a proposed value, a cited source span, the writer that produced the update, and the verdict the validator must return. The spans are synthetic placeholder text written for this repository and describe no real matter.",
+  "cases": [
+    {
+      "id": "identity-001",
+      "field": "case_name",
+      "value": "Sample Matter v. Example Corp",
+      "source_span": "IN THE SUPERIOR COURT OF EX STATE Sample Matter v. Example Corp, Case No. 24-CV-0001",
+      "writer": "matter_identity",
+      "expected_verdict": "OK",
+      "expected_reason": "substring"
+    },
+    {
+      "id": "identity-002",
+      "field": "case_number",
+      "value": "24-CV-0001",
+      "source_span": "Case No. 24-CV-0001, Sample Matter v. Example Corp",
+      "writer": "matter_identity",
+      "expected_verdict": "OK",
+      "expected_reason": "substring"
+    },
+    {
+      "id": "identity-003",
+      "field": "venue",
+      "value": "Superior Court of Ex State",
+      "source_span": "IN THE SUPERIOR COURT OF EX STATE",
+      "writer": "matter_identity",
+      "expected_verdict": "OK",
+      "expected_reason": "substring"
+    },
+    {
+      "id": "identity-004",
+      "field": "incident_date",
+      "value": "2026-01-14",
+      "source_span": "Date of incident: 01/14/2026",
+      "writer": "matter_identity",
+      "expected_verdict": "OK",
+      "expected_reason": "date"
+    },
+    {
+      "id": "identity-005",
+      "field": "case_number",
+      "value": "25-CV-9917",
+      "source_span": "Case No. 24-CV-0001, Sample Matter v. Example Corp",
+      "writer": "matter_identity",
+      "expected_verdict": "UNSUPPORTED",
+      "expected_reason": "not_found"
+    },
+    {
+      "id": "identity-006",
+      "field": "venue",
+      "value": "Federal District Court",
+      "source_span": "IN THE SUPERIOR COURT OF EX STATE",
+      "writer": "matter_identity",
+      "expected_verdict": "UNSUPPORTED",
+      "expected_reason": "not_found"
+    },
+    {
+      "id": "identity-007",
+      "field": "cause_of_action",
+      "value": "Rear-end collision",
+      "source_span": "The incident was a rear-end collision on the interstate.",
+      "writer": "matter_identity",
+      "expected_verdict": "OK",
+      "expected_reason": "substring"
+    },
+    {
+      "id": "identity-008",
+      "field": "case_name",
+      "value": "Sample Matter v. Example Corp",
+      "source_span": null,
+      "writer": "matter_identity",
+      "expected_verdict": "NO_SPAN",
+      "expected_reason": "no_span"
+    },
+    {
+      "id": "ledger-001",
+      "field": "provider_name",
+      "value": "Example Regional Medical Center",
+      "source_span": "Provider: Example Regional Medical Center, NPI 1000000001",
+      "writer": "financial_ledger",
+      "expected_verdict": "OK",
+      "expected_reason": "substring"
+    },
+    {
+      "id": "ledger-002",
+      "field": "billed_amount",
+      "value": 4820.5,
+      "source_span": "Total charges: 4,820.50",
+      "writer": "financial_ledger",
+      "expected_verdict": "OK",
+      "expected_reason": "numeric"
+    },
+    {
+      "id": "ledger-003",
+      "field": "billed_amount",
+      "value": 9310.25,
+      "source_span": "Total charges: 4,820.50",
+      "writer": "financial_ledger",
+      "expected_verdict": "UNSUPPORTED",
+      "expected_reason": "not_found"
+    },
+    {
+      "id": "ledger-004",
+      "field": "insurance_paid",
+      "value": 1200,
+      "source_span": "Insurance paid: 1,200.00",
+      "writer": "financial_ledger",
+      "expected_verdict": "OK",
+      "expected_reason": "numeric"
+    },
+    {
+      "id": "ledger-005",
+      "field": "patient_balance",
+      "value": 3620.5,
+      "source_span": "Total charges: 4,820.50  Insurance paid: 1,200.00  Patient balance: 3,620.50",
+      "writer": "financial_ledger",
+      "expected_verdict": "OK",
+      "expected_reason": "numeric"
+    },
+    {
+      "id": "ledger-006",
+      "field": "provider_name",
+      "value": "Another Facility Elsewhere",
+      "source_span": "Provider: Example Regional Medical Center, NPI 1000000001",
+      "writer": "financial_ledger",
+      "expected_verdict": "UNSUPPORTED",
+      "expected_reason": "not_found"
+    },
+    {
+      "id": "ledger-007",
+      "field": "service_date",
+      "value": "2026-02-03",
+      "source_span": "Service date 02/03/2026",
+      "writer": "financial_ledger",
+      "expected_verdict": "OK",
+      "expected_reason": "date"
+    },
+    {
+      "id": "deadline-001",
+      "field": "deadline_type",
+      "value": "discovery",
+      "source_span": "Discovery shall close on 03/01/2026 per the scheduling order.",
+      "writer": "deadlines",
+      "expected_verdict": "OK",
+      "expected_reason": "substring"
+    },
+    {
+      "id": "deadline-002",
+      "field": "deadline_date",
+      "value": "2026-03-01",
+      "source_span": "Discovery shall close on 03/01/2026 per the scheduling order.",
+      "writer": "deadlines",
+      "expected_verdict": "OK",
+      "expected_reason": "date"
+    },
+    {
+      "id": "deadline-003",
+      "field": "deadline_type",
+      "value": "trial",
+      "source_span": "Discovery shall close on 03/01/2026 per the scheduling order.",
+      "writer": "deadlines",
+      "expected_verdict": "UNSUPPORTED",
+      "expected_reason": "not_found"
+    },
+    {
+      "id": "deadline-004",
+      "field": "deadline_date",
+      "value": "2026-06-15",
+      "source_span": "Discovery shall close on 03/01/2026 per the scheduling order.",
+      "writer": "deadlines",
+      "expected_verdict": "UNSUPPORTED",
+      "expected_reason": "not_found"
+    },
+    {
+      "id": "deadline-005",
+      "field": "rule_basis",
+      "value": "Scheduling order paragraph 4",
+      "source_span": "per the scheduling order at paragraph 4",
+      "writer": "deadlines",
+      "expected_verdict": "OK",
+      "expected_reason": "tokens"
+    },
+    {
+      "id": "workflow-001",
+      "field": "status",
+      "value": "discovery",
+      "source_span": null,
+      "writer": "workflow",
+      "expected_verdict": "OK",
+      "expected_reason": "workflow_computed"
+    },
+    {
+      "id": "workflow-002",
+      "field": "status",
+      "value": "arbitration",
+      "source_span": null,
+      "writer": "workflow",
+      "expected_verdict": "TYPE_MISMATCH",
+      "expected_reason": "wrong_type"
+    },
+    {
+      "id": "workflow-003",
+      "field": "document_count",
+      "value": 14,
+      "source_span": "Documents in this matter: 14",
+      "writer": "workflow",
+      "expected_verdict": "OK",
+      "expected_reason": "numeric"
+    },
+    {
+      "id": "human-001",
+      "field": "attorney_notes",
+      "value": "Reviewed and corrected by the attorney.",
+      "source_span": null,
+      "writer": "attorney_review",
+      "expected_verdict": "OK",
+      "expected_reason": "human_attested"
+    },
+    {
+      "id": "human-002",
+      "field": "attorney_override_amount",
+      "value": 4820.5,
+      "source_span": null,
+      "writer": "attorney_review",
+      "expected_verdict": "OK",
+      "expected_reason": "human_attested"
+    },
+    {
+      "id": "optional-001",
+      "field": "injury_details",
+      "value": null,
+      "source_span": "The incident was a rear-end collision on the interstate.",
+      "writer": "matter_identity",
+      "expected_verdict": "OK",
+      "expected_reason": "absent"
+    },
+    {
+      "id": "writer-001",
+      "field": "billed_amount",
+      "value": 4820.5,
+      "source_span": "Total charges: 4,820.50",
+      "writer": "matter_identity",
+      "expected_verdict": "WRITER_MISMATCH",
+      "expected_reason": "wrong_field"
+    },
+    {
+      "id": "type-001",
+      "field": "billed_amount",
+      "value": "not a number",
+      "source_span": "Total charges: 4,820.50",
+      "writer": "financial_ledger",
+      "expected_verdict": "TYPE_MISMATCH",
+      "expected_reason": "wrong_type"
+    },
+    {
+      "id": "unknown-001",
+      "field": "not_a_real_field",
+      "value": "anything",
+      "source_span": "Some span text",
+      "writer": "matter_identity",
+      "expected_verdict": "UNKNOWN_FIELD",
+      "expected_reason": "wrong_field"
+    }
+  ]
+}
