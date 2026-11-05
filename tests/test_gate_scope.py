@@ -33,10 +33,35 @@ def _leak() -> str:
 
 
 def _copy(tmp_path: Path, keep_git: bool) -> Path:
-    ignore = ["__pycache__", ".pytest_cache"] + ([] if keep_git else [".git"])
     repo = tmp_path / "repo"
-    shutil.copytree(REPO_ROOT, repo, ignore=shutil.ignore_patterns(*ignore))
+    if keep_git:
+        shutil.copytree(REPO_ROOT, repo, ignore=shutil.ignore_patterns("__pycache__", ".pytest_cache"))
+    else:
+        _source_archive(repo)
     return repo
+
+
+def _source_archive(destination: Path) -> None:
+    """What a downloaded source archive holds: the tracked files, no .git.
+
+    Copying the whole working tree would also copy whatever the person
+    running the tests has lying around untracked, which no real archive
+    contains.
+    """
+    if not (REPO_ROOT / ".git").exists():
+        shutil.copytree(
+            REPO_ROOT, destination, ignore=shutil.ignore_patterns("__pycache__", ".pytest_cache")
+        )
+        return
+    listed = subprocess.run(
+        ["git", "ls-files", "-z"], cwd=REPO_ROOT, capture_output=True, check=True
+    ).stdout.decode("utf-8")
+    for name in filter(None, listed.split("\0")):
+        source = REPO_ROOT / name
+        if source.is_file():
+            target = destination / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
 
 
 def _plant(repo: Path, with_pyvenv_cfg: bool) -> None:
