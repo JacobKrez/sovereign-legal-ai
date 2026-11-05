@@ -475,6 +475,7 @@ tests/
   conftest.py
   test_extraction_schema.py   # validator behavior, fixture driven
   test_gate_patterns.py       # the gate's own patterns cannot match its own source
+  test_gate_scope.py          # the gate scans tracked files, not a reader's venv
   fixtures/
     grounding_cases.json  # synthetic spans and values for the grounding tests
 .github/

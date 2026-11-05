@@ -73,7 +73,13 @@ move at runtime: the thresholds are fixed below.
 
 - **Threshold:** zero matches for any pattern in `SECRET_PATTERNS`, across
   every text file in the repository.
-- **Source of truth:** a full scan of the working tree.
+- **Source of truth:** a full scan of the tracked files. Tracked means
+  `git ls-files`, so a reader's virtual environment or scratch directory
+  is never scanned, whatever it is named (in a source archive with no
+  `.git`, any directory holding a `pyvenv.cfg` is skipped). The same
+  file list feeds G5, G6, G7 and G9. An earlier version walked the
+  working tree and went red on any venv not called `.venv` or `venv`;
+  `tests/test_gate_scope.py` is the regression test.
 - **Why this threshold:** a repository that documents a secure deployment
   cannot contain a key. The failure mode is not theoretical: a credential
   committed once is compromised once, and a rotation is a bad afternoon.
@@ -92,7 +98,7 @@ move at runtime: the thresholds are fixed below.
 
 - **Threshold:** zero matches for any pattern in `CLIENT_DATA_PATTERNS` in
   file contents, and zero filenames matching `CASE_FILENAME_PATTERNS`.
-- **Source of truth:** a full scan of the working tree.
+- **Source of truth:** a full scan of the tracked files.
 - **Why this threshold:** this is the gate that makes the repository
   publishable rather than merely embarrassing. The subject matter is legal
   documents about real people. A repository about an air-gapped legal AI
@@ -126,7 +132,7 @@ move at runtime: the thresholds are fixed below.
 
 - **Threshold:** zero occurrences of an absolute path rooted at the
   author's home directory.
-- **Source of truth:** a full scan of the working tree.
+- **Source of truth:** a full scan of the tracked files.
 - **Why this threshold:** an absolute path leaks the author's username and
   workstation layout, and it breaks for anyone else who clones the
   repository. It is also a reliable signal that a file was pasted in from a
@@ -138,7 +144,7 @@ move at runtime: the thresholds are fixed below.
 
 - **Threshold:** zero currency amounts in markdown and data files, and zero
   matches for any phrase in `COMMERCIAL_PHRASES` anywhere.
-- **Source of truth:** a full scan of the working tree.
+- **Source of truth:** a full scan of the tracked files.
 - **Why this threshold:** a research case study that contains pricing is not
   a research case study. The reviewer is trying to judge the deployment and
   the questions it raises, and a price table turns the document into a
@@ -181,7 +187,7 @@ move at runtime: the thresholds are fixed below.
 
 - **Threshold:** zero occurrences of any term in `BANNED_VOCABULARY`, and
   zero em dashes, in every scanned file except `scripts/gate.py`.
-- **Source of truth:** a full scan of the working tree.
+- **Source of truth:** a full scan of the tracked files.
 - **Why this threshold:** the register of the document is part of the
   argument. A repository that describes its own system with the vocabulary
   of a product announcement is asking to be trusted in a register it has not

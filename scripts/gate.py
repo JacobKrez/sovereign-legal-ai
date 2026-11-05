@@ -27,7 +27,8 @@ Standard library only. No network access, no third-party packages.
 A note on how the forbidden patterns are written
 -----------------------------------------------
 
-This file scans every text file in the repository, including itself. A
+This file scans every tracked text file in the repository, including
+itself. A
 literal forbidden string in this file would therefore trip its own gate.
 The patterns below are assembled from fragments at import time so that the
 contiguous token never appears in the source. ``tests/test_gate_patterns.py``
@@ -304,14 +305,44 @@ class Gate:
 # ---------------------------------------------------------------------------
 
 
+def _repo_files() -> list[Path]:
+    """Every file that belongs to the repository.
+
+    In a git checkout this is ``git ls-files``: exactly what is published.
+    A reader's virtual environment or scratch directory is untracked and
+    never scanned, whatever it is called. In a source archive with no
+    ``.git``, walk the tree, skipping VCS and cache dirs and any directory
+    holding a ``pyvenv.cfg``.
+    """
+    if (REPO / ".git").exists():
+        try:
+            listed = subprocess.run(
+                ["git", "ls-files", "-z"],
+                cwd=REPO,
+                capture_output=True,
+                check=True,
+            ).stdout.decode("utf-8")
+            return [
+                path
+                for path in sorted(REPO / name for name in listed.split("\0") if name)
+                if path.is_file()
+            ]
+        except (OSError, subprocess.CalledProcessError):
+            pass
+    venvs = [cfg.parent for cfg in REPO.rglob("pyvenv.cfg")]
+    return [
+        path
+        for path in sorted(REPO.rglob("*"))
+        if path.is_file()
+        and not any(part in SKIP_DIRS for part in path.relative_to(REPO).parts)
+        and not any(venv in path.parents for venv in venvs)
+    ]
+
+
 def _scannable_files() -> list[Path]:
-    """Every text file in the repository, excluding VCS and cache dirs."""
+    """Every text file in the repository (see ``_repo_files``)."""
     out: list[Path] = []
-    for path in sorted(REPO.rglob("*")):
-        if not path.is_file():
-            continue
-        if any(part in SKIP_DIRS for part in path.parts):
-            continue
+    for path in _repo_files():
         if path.suffix.lower() not in TEXT_SUFFIXES:
             continue
         out.append(path)
@@ -533,11 +564,7 @@ def gate_client_data() -> GateResult:
             line = text.count("\n", 0, offset) + 1
             hits.append(f"{_rel(path)}:{line} {label}")
 
-    for path in sorted(REPO.rglob("*")):
-        if not path.is_file():
-            continue
-        if any(part in SKIP_DIRS for part in path.parts):
-            continue
+    for path in _repo_files():
         name = path.name
         for pattern in CASE_FILENAME_PATTERNS:
             if re.search(pattern, name):
